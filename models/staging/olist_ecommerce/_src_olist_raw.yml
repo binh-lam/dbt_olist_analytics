@@ -1,0 +1,31 @@
+version: 2
+sources:
+  - name: olist_raw
+    description: "Raw data from the Olist public dataset"
+    database: olist-474416
+    schema: olist_raw
+    tables:
+      - name: orders
+        description: "This is the core dataset. From each order you might find all other information."
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            tests:
+              - not_null
+      - name: order_items
+        description: "This dataset includes data about the items purchased within each order."
+      - name: order_payments
+        description: "This dataset includes data about the orders payment options."
+      - name: customers
+        description: "This dataset has information about the customer and its location. Use it to identify unique customers in the orders dataset and to find the orders delivery location. 
+                      Each order is assigned to a unique customer_id. 
+                      This means that the same customer will get different ids for different orders. 
+                      The purpose of having a customer_unique_id on the dataset is to allow you to identify customers that made repurchases at the store. 
+                      Otherwise you would find that each order had a different customer associated with."
+      - name: products
+        description: "This dataset includes data about the products sold by Olist."
+      - name: product_category_name_translation
+        description: "Use this dataset to translate the product_category_name to english."
