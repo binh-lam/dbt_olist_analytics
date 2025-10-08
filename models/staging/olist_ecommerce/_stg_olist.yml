@@ -1,0 +1,69 @@
+version: 2
+models:
+  - name: stg_olist__orders
+    description: "Staged orders data"
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_id
+        data_tests:
+          - not_null
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              values:
+                - approved
+                - canceled
+                - created
+                - delivered
+                - invoiced
+                - processing
+                - shipped
+                - unavailable
+
+  - name: stg_olist__order_items
+    description: "Staged order items data"
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_id
+              - order_item_id
+
+  - name: stg_olist__payments
+    description: "Staged payments data"
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_id
+              - payment_sequential
+
+  - name: stg_olist__customers
+    description: "Staged customers data, linking the order-specific customer_id to the unique customer identifier, customer_unique_id."
+    columns:
+      - name: customer_id
+        description: "Key to the orders table. An ID for a customer on a specific order."
+        data_tests:
+          - not_null
+          - unique
+      - name: customer_unique_id
+        description: "The true identifier for a customer across all orders."
+        data_tests:
+          - not_null
+
+  - name: stg_olist__products
+    description: "Staged product data with English category name"
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - unique
+      - name: product_category_name
+        description: "Translated English product category. NULL if no translation exists."
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
