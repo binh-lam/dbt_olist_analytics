@@ -32,7 +32,7 @@ top_categories AS (
     SELECT
         order_date,
         ARRAY_AGG(product_category_name ORDER BY category_rank)    AS top_daily_categories,
-        ARRAY_AGG(ROUND(product_category_daily_revenue / total_daily_revenue * 100, 2) 
+        ARRAY_AGG(ROUND(product_category_daily_revenue / total_daily_revenue, 4) 
                                         ORDER BY category_rank)    AS top_daily_categories_pct
 
     FROM daily_category_ranking
