@@ -4,13 +4,19 @@ models:
     description: Staged orders data
     columns:
       - name: order_id
+        data_type: string
+        description: Unique identifier of the order.
         data_tests:
           - not_null
           - unique
       - name: customer_id
+        data_type: string
+        description: Key to the customer dataset. Each order has a unique customer_id.
         data_tests:
           - not_null
       - name: order_status
+        data_type: string
+        description: Reference to the order status (delivered, shipped, etc).
         data_tests:
           - accepted_values:
               values:
@@ -22,9 +28,28 @@ models:
                 - processing
                 - shipped
                 - unavailable
+      - name: order_date
+        data_type: date
+        description: Date when the order was placed
 
   - name: stg_olist__order_items
     description: Staged order items data
+    columns:
+      - name: order_id
+        data_type: string
+        description: Unique identifier of the order.
+      - name: order_item_id
+        data_type: int64
+        description: Sequential number identifying number of items included in the same order.
+      - name: product_id
+        data_type: string
+        description: Unique product identifier
+      - name: price
+        data_type: float64
+        description: Item price
+      - name: freight_value
+        data_type: float64
+        description: Item freight value (if an order has more than one item the freight value is splitted between items)
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -34,6 +59,16 @@ models:
 
   - name: stg_olist__payments
     description: Staged payments data
+    columns:
+      - name: order_id
+        data_type: string
+        description: Unique identifier of the order.
+      - name: payment_sequential
+        data_type: int64
+        description: A customer may pay an order with more than one payment method. If they do so, a sequence will be created.
+      - name: payment_value
+        data_type: float64
+        description: Transaction value.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -45,11 +80,13 @@ models:
     description: Staged customers data, linking the order-specific customer_id to the unique customer identifier, customer_unique_id.
     columns:
       - name: customer_id
+        data_type: string
         description: Key to the orders table. An ID for a customer on a specific order.
         data_tests:
           - not_null
           - unique
       - name: customer_unique_id
+        data_type: string
         description: The true identifier for a customer across all orders.
         data_tests:
           - not_null
@@ -58,10 +95,13 @@ models:
     description: Staged product data with English category name
     columns:
       - name: product_id
+        data_type: string
+        description: Unique product identifier
         data_tests:
           - not_null
           - unique
       - name: product_category_name
+        data_type: string
         description: Translated English product category. Labeled as 'uncategorized' if no translation exists.
         data_tests:
           - not_null:

@@ -4,33 +4,40 @@ models:
     description: Daily aggregated report model showing total orders, customers, revenue, average order value, top 3 product categories and their revenue percentage.
     columns:
       - name: order_date
+        data_type: date
         description: The date of the orders.
         data_tests:
           - unique
           - not_null
 
       - name: daily_orders
+        data_type: int64
         description: Total number of successful orders for the day (order_status is not 'canceled' or 'unavailable').
         data_tests:
           - not_null
 
       - name: daily_customers
+        data_type: int64
         description: Total number of unique purchasing customers for the day.
         data_tests:
           - not_null
 
       - name: daily_revenue
+        data_type: float64
         description: Total revenue from successful orders for the day.
         data_tests:
           - not_null
           - is_non_negative
 
       - name: daily_avg_order_value
+        data_type: float64
         description: Average revenue per order for the day.
         
       - name: top_daily_categories
+        data_type: string
         description: An array of the top 3 product categories by revenue for the day. 
                      If the source product_category_name is NULL, it is labelled as 'uncategorized'.
 
       - name: top_daily_categories_pct
+        data_type: float64
         description: An array of the percentage of daily revenue from each of the top 3 product categories.
