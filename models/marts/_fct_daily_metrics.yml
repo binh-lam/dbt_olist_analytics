@@ -1,0 +1,36 @@
+version: 2
+models:
+  - name: fct_daily_metrics
+    description: Daily aggregated report model showing total orders, customers, revenue, average order value, top 3 product categories and their revenue percentage.
+    columns:
+      - name: order_date
+        description: The date of the orders.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: daily_orders
+        description: Total number of successful orders for the day (order_status is not 'canceled' or 'unavailable').
+        data_tests:
+          - not_null
+
+      - name: daily_customers
+        description: Total number of unique purchasing customers for the day.
+        data_tests:
+          - not_null
+
+      - name: daily_revenue
+        description: Total revenue from successful orders for the day.
+        data_tests:
+          - not_null
+          - is_non_negative
+
+      - name: daily_avg_order_value
+        description: Average revenue per order for the day.
+        
+      - name: top_daily_categories
+        description: An array of the top 3 product categories by revenue for the day. 
+                     If the source product_category_name is NULL, it is labelled as 'uncategorized'.
+
+      - name: top_daily_categories_pct
+        description: An array of the percentage of daily revenue from each of the top 3 product categories.
